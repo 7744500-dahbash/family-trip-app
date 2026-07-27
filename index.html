@@ -2705,6 +2705,12 @@ function showCompletePage() {
   
   document.getElementById('finalPoints').textContent = points;
   
+  // Update new stats
+  var fp = document.getElementById('finalPhotos');
+  var fc = document.getElementById('finalChallenges');
+  if (fp) fp.textContent = photosTaken.size;
+  if (fc) fc.textContent = challengesDone.size;
+  
   if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100, 50, 300]);
 }
 
@@ -2712,7 +2718,7 @@ function showCompletePage() {
 function showMathAnswer() {
   playSound('fun');
   const answers = [
-    "מראש העין לעין יבקע — בערך 80-90 ק"מ! 🚗",
+    "מראש העין לעין יבקע — בערך 80-90 ק''מ! 🚗",
     "עברנו 6 תחנות עד עכשיו — כמה תחנות עוד נשארו? (רמז: 3!) 📍",
     "אם נסענו שעה וחצי — כמה דקות זה? (90 דקות!) ⏱️",
     "תחשבו לבד: כמה פעמים אמרתם 'כמה כיף' היום? 😄"
@@ -2836,28 +2842,118 @@ function exportPlaylist() {
 
 // === RESTART ===
 function restartTrip() {
+  playSound('fun');
   completedSteps.clear();
   points = 0;
   currentStep = 0;
   resetTimer();
+  photosTaken.clear();
+  challengesDone.clear();
+  photoCount = 0;
+  hasVoted = false;
+  voteCounts = [0, 0, 0, 0, 0, 0];
   
   // Reset water state
   for (let i = 1; i <= 9; i++) {
     waterState[i] = false;
-    const btn = document.getElementById('water-' + i);
+    var btn = document.getElementById('water-' + i);
     if (btn) {
       btn.classList.remove('drank');
       btn.innerHTML = '🫗 עדיין לא שתיתי';
     }
   }
   
+  // Reset stamps
   for (let i = 1; i <= 9; i++) {
-    const stamp = document.getElementById('stamp-' + i);
+    var stamp = document.getElementById('stamp-' + i);
     if (stamp) stamp.classList.remove('earned');
   }
   
+  // Reset photos
+  document.querySelectorAll('.photo-reminder').forEach(function(p) { p.classList.remove('done'); });
+  document.querySelectorAll('.photo-btn').forEach(function(p) { p.classList.remove('done'); p.textContent = '📷 צלם'; });
+  
+  // Reset challenges
+  document.querySelectorAll('.challenge-card').forEach(function(c) { c.classList.remove('done'); });
+  document.querySelectorAll('.challenge-done-btn').forEach(function(b) { b.classList.remove('done'); b.textContent = '✅ עשינו את האתגר!'; });
+  
+  // Reset vote
+  document.querySelectorAll('.vote-option').forEach(function(v) { v.classList.remove('selected'); });
+  
+  // Reset checklist
+  document.querySelectorAll('.checklist-item').forEach(function(c) { c.classList.remove('done'); });
+  document.querySelectorAll('.reminder-item').forEach(function(r) { r.classList.remove('done'); });
+  var cp = document.getElementById('checklistProgress');
+  if (cp) { cp.textContent = '0/7 מוכנים'; cp.style.color = ''; }
+  
   updateHeader();
   showPage('page-welcome');
+  document.getElementById('backBtn').style.display = 'none';
+}
+
+// === CHECKLIST ===
+function toggleChecklist(item) {
+  playSound('click');
+  item.classList.toggle('done');
+  const items = document.querySelectorAll('.checklist-item.done');
+  const total = document.querySelectorAll('.checklist-item');
+  const progress = document.getElementById('checklistProgress');
+  if (progress) {
+    progress.textContent = items.length + '/' + total.length + ' מוכנים';
+    if (items.length === total.length) {
+      progress.textContent = '🎉 כל הכבוד! מוכנים לטיול!';
+      progress.style.color = '#4CAF50';
+    }
+  }
+}
+
+// === PHOTO REMINDER ===
+let photoCount = 0;
+const photosTaken = new Set();
+function takePhoto(step) {
+  if (photosTaken.has(step)) return;
+  photosTaken.add(step);
+  photoCount++;
+  const reminder = document.getElementById('photo-' + step);
+  const btn = document.getElementById('photo-btn-' + step);
+  const text = document.getElementById('photo-text-' + step);
+  if (reminder) reminder.classList.add('done');
+  if (btn) { btn.classList.add('done'); btn.textContent = '✅ צולם!'; }
+  if (text) text.textContent = 'תמונה ' + photoCount + ' נשמרה! יפה! 📸';
+  points += 15;
+  updateHeader();
+  playSound('success');
+  if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+}
+
+// === CHALLENGE ===
+const challengesDone = new Set();
+function completeChallenge(step) {
+  if (challengesDone.has(step)) return;
+  challengesDone.add(step);
+  const card = document.getElementById('challenge-' + step);
+  const btn = document.getElementById('challenge-btn-' + step);
+  if (card) card.classList.add('done');
+  if (btn) { btn.classList.add('done'); btn.textContent = '✅ האתגר הושלם! +25 נקודות'; }
+  points += 25;
+  updateHeader();
+  playSound('success');
+  if (navigator.vibrate) navigator.vibrate(100);
+}
+
+// === VOTE ===
+let hasVoted = false;
+let voteCounts = [0, 0, 0, 0, 0, 0];
+function castVote(el, index) {
+  if (hasVoted) return;
+  hasVoted = true;
+  voteCounts[index]++;
+  document.querySelectorAll('.vote-option').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  var vc = document.getElementById('vote-' + index);
+  if (vc) vc.textContent = voteCounts[index];
+  playSound('success');
+  if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
 }
 
 // === INIT ===
