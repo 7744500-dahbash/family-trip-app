@@ -1199,6 +1199,228 @@ body {
 .trivia-q.show-answer .trivia-a { display: block; }
 .trivia-a { display: none; margin-top: 8px; color: var(--primary); font-weight: 700; }
 
+
+/* === PHOTO REMINDER === */
+.photo-reminder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+  border: 2px dashed #FFB74D;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.photo-reminder-icon { font-size: 28px; }
+.photo-reminder-text { flex: 1; font-size: 14px; font-weight: 600; color: #E65100; }
+.photo-reminder-text small { display: block; font-size: 12px; font-weight: 400; color: #BF360C; margin-top: 2px; }
+.photo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 16px;
+  background: #FF9800;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.photo-btn:active { transform: scale(0.95); }
+.photo-btn.done { background: #4CAF50; }
+.photo-reminder.done {
+  border-style: solid;
+  border-color: #4CAF50;
+  background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+}
+.photo-reminder.done .photo-reminder-text { color: #2E7D32; }
+.photo-reminder.done .photo-reminder-text small { color: #1B5E20; }
+
+/* === CHALLENGE CARD === */
+.challenge-card {
+  background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+  border: 2px solid #64B5F6;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.challenge-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1565C0;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.challenge-text {
+  font-size: 14px;
+  color: #0D47A1;
+  line-height: 1.5;
+}
+.challenge-done-btn {
+  margin-top: 8px;
+  padding: 8px 16px;
+  background: #1565C0;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.challenge-done-btn:active { transform: scale(0.95); }
+.challenge-done-btn.done { background: #4CAF50; }
+.challenge-card.done {
+  border-color: #4CAF50;
+  background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+}
+.challenge-card.done .challenge-title { color: #2E7D32; }
+.challenge-card.done .challenge-text { color: #1B5E20; }
+
+/* === TRANSITION REMINDERS === */
+.transition-reminders {
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 20px;
+}
+.reminder-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.reminder-item:active { transform: scale(0.97); }
+.reminder-item.done { background: #E8F5E9; border: 1px solid #4CAF50; }
+.reminder-icon { font-size: 24px; }
+.reminder-text { flex: 1; font-size: 14px; font-weight: 600; }
+.reminder-check { font-size: 20px; opacity: 0; transition: opacity 0.2s; }
+.reminder-item.done .reminder-check { opacity: 1; }
+
+/* === PRE-TRIP CHECKLIST === */
+.checklist-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.checklist-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f9f9f9;
+}
+.checklist-item:active { transform: scale(0.98); }
+.checklist-item.done { background: #E8F5E9; }
+.checklist-icon { font-size: 24px; width: 32px; text-align: center; }
+.checklist-label { flex: 1; font-size: 15px; font-weight: 600; }
+.checklist-box {
+  width: 26px; height: 26px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #4CAF50;
+  transition: all 0.2s;
+}
+.checklist-item.done .checklist-box { border-color: #4CAF50; background: #4CAF50; color: #fff; }
+.checklist-progress {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* === BEST MOMENT VOTE === */
+.vote-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.vote-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 12px;
+  text-align: center;
+}
+.vote-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+.vote-option:active { transform: scale(0.97); }
+.vote-option.selected {
+  border-color: var(--gold);
+  background: #FFF8E1;
+}
+.vote-icon { font-size: 28px; }
+.vote-label { flex: 1; font-size: 14px; font-weight: 600; }
+.vote-count {
+  background: var(--primary);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* === STATS GRID === */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.stat-tile {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.stat-tile-icon { font-size: 28px; margin-bottom: 4px; }
+.stat-tile-num { font-size: 24px; font-weight: 900; color: var(--primary); }
+.stat-tile-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
 </style>
 </head>
 <body>
@@ -1298,6 +1520,18 @@ body {
     <div class="fun-fact-text">המעיינות כאן זרמו בשפע כל ימות השנה — עד שהבריטים הקימו ב־1936 תחנת שאיבה שהעבירה מים לירושלים ולכפרים בדרך. מאז נותר הירקון נחל קטן יחסית.</div>
   </div>
 
+  <div class="photo-reminder" id="photo-1">
+    <div class="photo-reminder-icon">📸</div>
+    <div class="photo-reminder-text">צילמתם? <small id="photo-text-1">אל תשכחו לתעד את התחנה!</small></div>
+    <label class="photo-btn" id="photo-btn-1" onclick="takePhoto(1)">📷 צלם</label>
+  </div>
+
+  <div class="challenge-card" id="challenge-1">
+    <div class="challenge-title">🎯 אתגר התחנה</div>
+    <div class="challenge-text">צלמו תמונה משפחתית ליד מעיינות הירקון! המים הם הכוכבים 🌊</div>
+    <button class="challenge-done-btn" id="challenge-btn-1" onclick="completeChallenge(1)">✅ עשינו את האתגר!</button>
+  </div>
+
   <button class="btn btn-primary btn-large" onclick="completeStep(1)">✅ השלמנו את התחנה — ממשיכים!</button>
 </div>
 
@@ -1353,6 +1587,18 @@ body {
     <div class="fun-fact-text">השם "גלגל" קשור אולי למעגל אבנים שהקימו בני ישראל, או לגלגל האבנים שהסירו מעורלת כל זכר כשנכנסו לארץ (יהושע ה).</div>
   </div>
 
+  <div class="photo-reminder" id="photo-2">
+    <div class="photo-reminder-icon">📸</div>
+    <div class="photo-reminder-text">צילמתם? <small id="photo-text-2">אל תשכחו לתעד את התחנה!</small></div>
+    <label class="photo-btn" id="photo-btn-2" onclick="takePhoto(2)">📷 צלם</label>
+  </div>
+
+  <div class="challenge-card" id="challenge-2">
+    <div class="challenge-title">🎯 אתגר התחנה</div>
+    <div class="challenge-text">חפשו על הדרך משהו עגול כמו גלגל — גלגל מכונית, גלגל שמש, כל דבר! ⭕</div>
+    <button class="challenge-done-btn" id="challenge-btn-2" onclick="completeChallenge(2)">✅ עשינו את האתגר!</button>
+  </div>
+
   <button class="btn btn-primary btn-large" onclick="completeStep(2)">✅ השלמנו את התחנה — ממשיכים!</button>
 </div>
 
@@ -1401,6 +1647,18 @@ body {
   <div class="fun-fact">
     <div class="fun-fact-label">💡 הידעת?</div>
     <div class="fun-fact-text">המעבר הזה כל כך חשוב שגם הבריטים, הטורקים וצבאות הצלבנים עברו בו. היום כביש 65 חוצה את אותו מעבר ממש!</div>
+  </div>
+
+  <div class="photo-reminder" id="photo-3">
+    <div class="photo-reminder-icon">📸</div>
+    <div class="photo-reminder-text">צילמתם? <small id="photo-text-3">אל תשכחו לתעד את התחנה!</small></div>
+    <label class="photo-btn" id="photo-btn-3" onclick="takePhoto(3)">📷 צלם</label>
+  </div>
+
+  <div class="challenge-card" id="challenge-3">
+    <div class="challenge-title">🎯 אתגר התחנה</div>
+    <div class="challenge-text">צלמו תמונה של הרי אפרים או מנשה מהכביש. מי יכול לזהות איזה שבט גר כאן? 🏔️</div>
+    <button class="challenge-done-btn" id="challenge-btn-3" onclick="completeChallenge(3)">✅ עשינו את האתגר!</button>
   </div>
 
   <button class="btn btn-primary btn-large" onclick="completeStep(3)">✅ השלמנו את התחנה — ממשיכים!</button>
@@ -1458,6 +1716,18 @@ body {
     <div class="fun-fact-text">הר הכרמל מוזכר במקרא בעיקר בסיפור <strong>אליהו ונביאי הבעל</strong> (מלכים א י"ח). אליהו התפלל וירד אש מהשמים — ממש כאן באזור!</div>
   </div>
 
+  <div class="photo-reminder" id="photo-4">
+    <div class="photo-reminder-icon">📸</div>
+    <div class="photo-reminder-text">צילמתם? <small id="photo-text-4">אל תשכחו לתעד את התחנה!</small></div>
+    <label class="photo-btn" id="photo-btn-4" onclick="takePhoto(4)">📷 צלם</label>
+  </div>
+
+  <div class="challenge-card" id="challenge-4">
+    <div class="challenge-title">🎯 אתגר התחנה</div>
+    <div class="challenge-text">צלמו סלפי עם הר הכרמל ברקע! מי מצליח לראות את תל יקנעם? 📸</div>
+    <button class="challenge-done-btn" id="challenge-btn-4" onclick="completeChallenge(4)">✅ עשינו את האתגר!</button>
+  </div>
+
   <button class="btn btn-primary btn-large" onclick="completeStep(4)">✅ השלמנו את התחנה — ממשיכים!</button>
 </div>
 
@@ -1494,6 +1764,18 @@ body {
   </div>
 
   <a href="https://waze.com/ul?q=Big%20Alonim" target="_blank" rel="noopener" class="btn btn-waze btn-large">📍 פתח ב-Waze</a>
+
+  <div class="photo-reminder" id="photo-5">
+    <div class="photo-reminder-icon">📸</div>
+    <div class="photo-reminder-text">צילמתם? <small id="photo-text-5">אל תשכחו לתעד את התחנה!</small></div>
+    <label class="photo-btn" id="photo-btn-5" onclick="takePhoto(5)">📷 צלם</label>
+  </div>
+
+  <div class="challenge-card" id="challenge-5">
+    <div class="challenge-title">🎯 אתגר התחנה</div>
+    <div class="challenge-text">תעדו את העצירה: כל אחד מצלם את הקפה או הסנדוויץ שלו. הכי יפה מנצח! ☕📸</div>
+    <button class="challenge-done-btn" id="challenge-btn-5" onclick="completeChallenge(5)">✅ עשינו את האתגר!</button>
+  </div>
 
   <button class="btn btn-primary btn-large" onclick="completeStep(5)">✅ השלמנו את התחנה — ממשיכים!</button>
 </div>
@@ -1662,6 +1944,18 @@ body {
     <div class="playlist-spotify-hint">אחרי שכולם בחרו, פתחו Spotify והוסיפו את השירים! 🎧</div>
   </div>
 
+  <div class="photo-reminder" id="photo-6">
+    <div class="photo-reminder-icon">📸</div>
+    <div class="photo-reminder-text">צילמתם? <small id="photo-text-6">אל תשכחו לתעד את התחנה!</small></div>
+    <label class="photo-btn" id="photo-btn-6" onclick="takePhoto(6)">📷 צלם</label>
+  </div>
+
+  <div class="challenge-card" id="challenge-6">
+    <div class="challenge-title">🎯 אתגר התחנה</div>
+    <div class="challenge-text">כל אחד שר שורה מהשיר הראשון שבחר בפלייליסט! אפילו מזייף — בעיקר מזייף 🎤😄</div>
+    <button class="challenge-done-btn" id="challenge-btn-6" onclick="completeChallenge(6)">✅ עשינו את האתגר!</button>
+  </div>
+
   <button class="btn btn-primary btn-large" onclick="completeStep(6)">✅ השלמנו את התחנה — ממשיכים!</button>
 </div>
 
@@ -1750,6 +2044,18 @@ body {
 
   <a href="https://waze.com/ul?q=Alexander%20Zeid%20Monument" target="_blank" rel="noopener" class="btn btn-waze btn-large">📍 פתח ב-Waze</a>
 
+  <div class="photo-reminder" id="photo-7">
+    <div class="photo-reminder-icon">📸</div>
+    <div class="photo-reminder-text">צילמתם? <small id="photo-text-7">אל תשכחו לתעד את התחנה!</small></div>
+    <label class="photo-btn" id="photo-btn-7" onclick="takePhoto(7)">📷 צלם</label>
+  </div>
+
+  <div class="challenge-card" id="challenge-7">
+    <div class="challenge-title">🎯 אתגר התחנה</div>
+    <div class="challenge-text">צלמו סלפי עם פסל אלכסנדר זייד על הסוס! מי עושה את הפרצוף הכי רציני? 🐎</div>
+    <button class="challenge-done-btn" id="challenge-btn-7" onclick="completeChallenge(7)">✅ עשינו את האתגר!</button>
+  </div>
+
   <button class="btn btn-primary btn-large" onclick="completeStep(7)">✅ השלמנו את התחנה — ממשיכים!</button>
 </div>
 
@@ -1821,6 +2127,18 @@ body {
   </div>
 
   <a href="https://waze.com/ul?q=Beit%20Shearim%20National%20Park" target="_blank" rel="noopener" class="btn btn-waze btn-large">📍 פתח ב-Waze</a>
+
+  <div class="photo-reminder" id="photo-8">
+    <div class="photo-reminder-icon">📸</div>
+    <div class="photo-reminder-text">צילמתם? <small id="photo-text-8">אל תשכחו לתעד את התחנה!</small></div>
+    <label class="photo-btn" id="photo-btn-8" onclick="takePhoto(8)">📷 צלם</label>
+  </div>
+
+  <div class="challenge-card" id="challenge-8">
+    <div class="challenge-title">🎯 אתגר התחנה</div>
+    <div class="challenge-text">חפשו במערות כתובת בעברית או יוונית. נסו לקרוא! מי מוצא את הכי הרבה? 🔍</div>
+    <button class="challenge-done-btn" id="challenge-btn-8" onclick="completeChallenge(8)">✅ עשינו את האתגר!</button>
+  </div>
 
   <button class="btn btn-primary btn-large" onclick="completeStep(8)">✅ השלמנו את התחנה — ממשיכים!</button>
 </div>
