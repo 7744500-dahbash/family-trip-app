@@ -795,7 +795,6 @@ body {
   margin-bottom: 14px;
   border: 1px solid #BBDEFB;
 }
-
 .water-card-title {
   font-size: 15px;
   font-weight: 800;
@@ -805,43 +804,138 @@ body {
   align-items: center;
   gap: 8px;
 }
-
-.water-row {
+.water-meter-wrap {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 12px;
 }
-
-.water-btn {
-  display: inline-flex;
-  align-items: center;
+.water-bottle {
+  width: 70px;
+  height: 160px;
+  border: 3px solid #64B5F6;
+  border-radius: 12px 12px 8px 8px;
+  position: relative;
+  overflow: hidden;
+  background: #E3F2FD;
+  flex-shrink: 0;
+}
+.water-bottle::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 8px;
+  background: #64B5F6;
+  border-radius: 4px 4px 0 0;
+}
+.water-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  background: linear-gradient(180deg, #42A5F5, #1976D2);
+  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 0 5px 5px;
+}
+.water-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255,255,255,0.4);
+  animation: water-wave 2s ease-in-out infinite;
+}
+@keyframes water-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.water-bottle-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  z-index: 2;
+  pointer-events: none;
+}
+.water-bottle-label.empty {
+  color: #90CAF9;
+  text-shadow: none;
+  font-size: 28px;
+}
+.water-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  padding: 10px 14px;
-  border: 2px solid #90CAF9;
-  border-radius: 12px;
+}
+.water-amount {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1565C0;
+}
+.water-amount small {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64B5F6;
+}
+.water-goal-text {
+  font-size: 12px;
+  color: #1976D2;
+  font-weight: 600;
+}
+.water-sips-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.water-sip {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #BBDEFB;
   background: #fff;
-  font-family: 'Heebo', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s;
 }
-
-.water-btn:active { transform: scale(0.95); }
-
-.water-btn.drank {
+.water-sip:active { transform: scale(0.85); }
+.water-sip.filled {
   background: #2196F3;
-  border-color: #1976D2;
-  color: #fff;
+  border-color: #1565C0;
+  box-shadow: 0 2px 6px rgba(33,150,243,0.3);
 }
-
-.water-progress {
-  font-size: 13px;
-  color: #1565C0;
-  font-weight: 700;
-  margin-top: 10px;
+.water-celebrate {
+  display: none;
+  background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+  border: 2px solid #4CAF50;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #2E7D32;
   text-align: center;
+  margin-top: 10px;
+  animation: water-pop 0.5s ease;
+}
+.water-celebrate.show { display: block; }
+@keyframes water-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* === FUN FACT === */
@@ -1511,8 +1605,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-1" onclick="toggleWater(1)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-1"></div>
+        <div class="water-bottle-label empty" id="water-label-1">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-1">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-1">
+          <div class="water-sip" onclick="addWater(1, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(1, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(1, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(1, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(1, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(1, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(1, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(1, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-1">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <div class="fun-fact">
@@ -1578,8 +1692,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-2" onclick="toggleWater(2)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-2"></div>
+        <div class="water-bottle-label empty" id="water-label-2">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-2">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-2">
+          <div class="water-sip" onclick="addWater(2, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(2, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(2, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(2, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(2, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(2, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(2, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(2, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-2">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <div class="fun-fact">
@@ -1640,8 +1774,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-3" onclick="toggleWater(3)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-3"></div>
+        <div class="water-bottle-label empty" id="water-label-3">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-3">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-3">
+          <div class="water-sip" onclick="addWater(3, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(3, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(3, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(3, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(3, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(3, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(3, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(3, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-3">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <div class="fun-fact">
@@ -1707,8 +1861,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-4" onclick="toggleWater(4)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-4"></div>
+        <div class="water-bottle-label empty" id="water-label-4">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-4">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-4">
+          <div class="water-sip" onclick="addWater(4, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(4, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(4, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(4, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(4, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(4, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(4, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(4, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-4">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <div class="fun-fact">
@@ -1759,8 +1933,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-5" onclick="toggleWater(5)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-5"></div>
+        <div class="water-bottle-label empty" id="water-label-5">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-5">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-5">
+          <div class="water-sip" onclick="addWater(5, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(5, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(5, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(5, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(5, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(5, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(5, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(5, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-5">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <a href="https://waze.com/ul?q=Big%20Alonim" target="_blank" rel="noopener" class="btn btn-waze btn-large">📍 פתח ב-Waze</a>
@@ -1820,8 +2014,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-6" onclick="toggleWater(6)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-6"></div>
+        <div class="water-bottle-label empty" id="water-label-6">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-6">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-6">
+          <div class="water-sip" onclick="addWater(6, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(6, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(6, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(6, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(6, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(6, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(6, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(6, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-6">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <!-- QUIET TIME ACTIVITIES -->
@@ -2038,8 +2252,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-7" onclick="toggleWater(7)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-7"></div>
+        <div class="water-bottle-label empty" id="water-label-7">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-7">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-7">
+          <div class="water-sip" onclick="addWater(7, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(7, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(7, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(7, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(7, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(7, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(7, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(7, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-7">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <a href="https://waze.com/ul?q=Alexander%20Zeid%20Monument" target="_blank" rel="noopener" class="btn btn-waze btn-large">📍 פתח ב-Waze</a>
@@ -2122,8 +2356,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-8" onclick="toggleWater(8)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-8"></div>
+        <div class="water-bottle-label empty" id="water-label-8">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-8">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-8">
+          <div class="water-sip" onclick="addWater(8, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(8, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(8, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(8, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(8, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(8, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(8, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(8, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-8">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <a href="https://waze.com/ul?q=Beit%20Shearim%20National%20Park" target="_blank" rel="noopener" class="btn btn-waze btn-large">📍 פתח ב-Waze</a>
@@ -2192,8 +2446,28 @@ body {
   </div>
 
   <div class="water-card">
-    <div class="water-card-title">💧 שתית מים? לחצו לסימון!</div>
-    <button class="water-btn" id="water-9" onclick="toggleWater(9)">🫗 עדיין לא שתיתי</button>
+    <div class="water-card-title">💧 מד המים — האם שתית 2 ליטר היום?</div>
+    <div class="water-meter-wrap">
+      <div class="water-bottle">
+        <div class="water-fill" id="water-fill-9"></div>
+        <div class="water-bottle-label empty" id="water-label-9">🫗</div>
+      </div>
+      <div class="water-info">
+        <div class="water-amount"><span id="water-ml-9">0</span> מ"ל <small>/ 2000 מ"ל</small></div>
+        <div class="water-goal-text">מטרה יומית: 2 ליטר 💧</div>
+        <div class="water-sips-row" id="water-sips-9">
+          <div class="water-sip" onclick="addWater(9, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(9, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(9, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(9, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(9, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(9, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(9, 250)">🥤</div>
+          <div class="water-sip" onclick="addWater(9, 250)">🥤</div>
+        </div>
+      </div>
+    </div>
+    <div class="water-celebrate" id="water-celebrate-9">🎉 כל הכבוד! שתית 2 ליטר! 🥛💧</div>
   </div>
 
   <a href="https://waze.com/ul?q=Ein%20Yabkea" target="_blank" rel="noopener" class="btn btn-waze btn-large">📍 פתח ב-Waze</a>
@@ -2481,19 +2755,51 @@ for (let i = 1; i <= 9; i++) {
   waterState[i] = false;
 }
 
-// === WATER TRACKER ===
-function toggleWater(step) {
-  waterState[step] = !waterState[step];
-  playSound(waterState[step] ? 'water' : 'click');
-  const btn = document.getElementById('water-' + step);
-  if (waterState[step]) {
-    btn.classList.add('drank');
-    btn.innerHTML = '💧 שתיתי מים! כל הכבוד ' + myName + '!';
-    if (navigator.vibrate) navigator.vibrate(100);
-  } else {
-    btn.classList.remove('drank');
-    btn.innerHTML = '🫗 עדיין לא שתיתי';
+// === WATER TRACKER (2L METER) ===
+const WATER_GOAL = 2000;
+const SIP_SIZE = 250;
+const waterSips = {};
+
+function addWater(step, amount) {
+  var currentSips = waterSips[step] || 0;
+  if (currentSips >= 8) return;
+  waterSips[step] = currentSips + 1;
+  var totalMl = waterSips[step] * SIP_SIZE;
+  var percent = Math.min((totalMl / WATER_GOAL) * 100, 100);
+  var fill = document.getElementById('water-fill-' + step);
+  if (fill) fill.style.height = percent + '%';
+  var label = document.getElementById('water-label-' + step);
+  if (label) {
+    if (totalMl >= WATER_GOAL) { label.textContent = '\u2705'; label.classList.remove('empty'); }
+    else if (totalMl > 0) { label.textContent = totalMl + ''; label.classList.remove('empty'); }
   }
+  var mlEl = document.getElementById('water-ml-' + step);
+  if (mlEl) mlEl.textContent = totalMl;
+  var sips = document.querySelectorAll('#water-sips-' + step + ' .water-sip');
+  sips.forEach(function(sip, idx) { if (idx < waterSips[step]) sip.classList.add('filled'); });
+  if (totalMl >= WATER_GOAL) {
+    var celeb = document.getElementById('water-celebrate-' + step);
+    if (celeb) celeb.classList.add('show');
+    points += 20; updateHeader(); playSound('success');
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+  } else {
+    playSound('water');
+    if (navigator.vibrate) navigator.vibrate(50);
+  }
+}
+
+function resetWaterMeter(step) {
+  waterSips[step] = 0;
+  var fill = document.getElementById('water-fill-' + step);
+  if (fill) fill.style.height = '0%';
+  var label = document.getElementById('water-label-' + step);
+  if (label) { label.textContent = '\uD83E\uDD7B'; label.classList.add('empty'); }
+  var mlEl = document.getElementById('water-ml-' + step);
+  if (mlEl) mlEl.textContent = '0';
+  var sips = document.querySelectorAll('#water-sips-' + step + ' .water-sip');
+  sips.forEach(function(sip) { sip.classList.remove('filled'); });
+  var celeb = document.getElementById('water-celebrate-' + step);
+  if (celeb) celeb.classList.remove('show');
 }
 
 // === START TRIP ===
@@ -2708,8 +3014,12 @@ function showCompletePage() {
   // Update new stats
   var fp = document.getElementById('finalPhotos');
   var fc = document.getElementById('finalChallenges');
+  var fw = document.getElementById('finalWater');
   if (fp) fp.textContent = photosTaken.size;
   if (fc) fc.textContent = challengesDone.size;
+  var totalMl = 0;
+  for (var wi = 1; wi <= 9; wi++) { totalMl += (waterSips[wi] || 0) * 250; }
+  if (fw) fw.textContent = (totalMl / 1000).toFixed(1);
   
   if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100, 50, 300]);
 }
@@ -2853,15 +3163,8 @@ function restartTrip() {
   hasVoted = false;
   voteCounts = [0, 0, 0, 0, 0, 0];
   
-  // Reset water state
-  for (let i = 1; i <= 9; i++) {
-    waterState[i] = false;
-    var btn = document.getElementById('water-' + i);
-    if (btn) {
-      btn.classList.remove('drank');
-      btn.innerHTML = '🫗 עדיין לא שתיתי';
-    }
-  }
+  // Reset water meters
+  for (var i = 1; i <= 9; i++) { resetWaterMeter(i); }
   
   // Reset stamps
   for (let i = 1; i <= 9; i++) {
