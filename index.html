@@ -1518,6 +1518,158 @@ body {
 .stat-tile-num { font-size: 24px; font-weight: 900; color: var(--primary); }
 .stat-tile-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
+
+/* === STATION NAVIGATOR === */
+.nav-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-btn:active { transform: scale(0.9); }
+
+.nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.nav-overlay.show { display: flex; }
+
+.nav-panel {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 360px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.nav-panel-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.nav-station {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  margin-bottom: 6px;
+}
+.nav-station:active { transform: scale(0.97); }
+.nav-station:hover { background: var(--accent); }
+.nav-station.completed { background: #E8F5E9; border-color: #4CAF50; }
+.nav-station.current { background: #E3F2FD; border-color: var(--primary); }
+
+.nav-station-num {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.nav-station.completed .nav-station-num { background: #4CAF50; }
+
+.nav-station-info {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.nav-station-check {
+  font-size: 20px;
+}
+
+.nav-close-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: var(--muted);
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* === EMAIL INPUT === */
+.email-input-field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: #fff;
+  box-sizing: border-box;
+  margin-top: 8px;
+  direction: ltr;
+  text-align: right;
+}
+
+.email-input-field:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* === SEND EMAIL BUTTON === */
+.send-email-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  color: #fff;
+  font-family: 'Heebo', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(33,150,243,0.3);
+}
+.send-email-btn:active { transform: scale(0.97); }
+.send-email-btn:disabled { opacity: 0.6; }
+
+.email-status {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 8px;
+  min-height: 20px;
+}
+.email-status.success { color: #4CAF50; }
+.email-status.error { color: #f44336; }
+.email-status.sending { color: #2196F3; }
+
 </style>
 </head>
 <body>
@@ -1528,6 +1680,7 @@ body {
     <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none;">⬅️</button>
     <div class="header-title" id="headerTitle">🚗 טיול משפחתי</div>
     <div class="header-points"><span class="star">⭐</span> <span id="points">0</span> נקודות</div>
+    <button class="nav-btn" onclick="showNavOverlay()">☰</button>
   </div>
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
   <div class="progress-label" id="progressLabel">תחנה 0 מתוך 9</div>
@@ -1544,19 +1697,21 @@ body {
   <div class="name-input-card">
     <label class="name-input-label">👤 מה השם שלך?</label>
     <input type="text" class="name-input-field" id="myName" value="" placeholder="הכניסו את השם שלכם" maxlength="20" autofocus>
+    <label class="name-input-label" style="margin-top:12px;">📧 מה המייל שלך?</label>
+    <input type="email" class="email-input-field" id="myEmail" value="" placeholder="your@email.com" maxlength="50">
   </div>
 
   <div class="route-card">
-    <div style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:10px;">🗺️ מסלול הטיול</div>
-    <div class="route-item"><div class="route-item-num">1</div><span class="route-item-icon">🏛️</span> ראש העין ואבן העזר</div>
-    <div class="route-item"><div class="route-item-num">2</div><span class="route-item-icon">📜</span> ג'לג'וליה / גלגל</div>
-    <div class="route-item"><div class="route-item-num">3</div><span class="route-item-icon">⚔️</span> מעבר עירון / כביש 65</div>
-    <div class="route-item"><div class="route-item-num">4</div><span class="route-item-icon">🏔️</span> תל יקנעם והכרמל</div>
-    <div class="route-item"><div class="route-item-num">5</div><span class="route-item-icon">☕</span> ביג עלונים — ארומה</div>
-    <div class="route-item"><div class="route-item-num">6</div><span class="route-item-icon">🎵</span> זמן פרטי (טיימר)</div>
-    <div class="route-item"><div class="route-item-num">7</div><span class="route-item-icon">🛡️</span> שייח' אבריק — אלכסנדר זייד</div>
-    <div class="route-item"><div class="route-item-num">8</div><span class="route-item-icon">📚</span> בית שערים</div>
-    <div class="route-item"><div class="route-item-num">9</div><span class="route-item-icon">💧</span> עין יבקע</div>
+    <div style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:10px;">🗺️ מסלול הטיול — לחצו על מספר למעבר ישיר</div>
+    <div class="route-item" onclick="goToStep(1)" style="cursor:pointer;"><div class="route-item-num">1</div><span class="route-item-icon">🏛️</span> ראש העין ואבן העזר</div>
+    <div class="route-item" onclick="goToStep(2)" style="cursor:pointer;"><div class="route-item-num">2</div><span class="route-item-icon">📜</span> ג'לג'וליה / גלגל</div>
+    <div class="route-item" onclick="goToStep(3)" style="cursor:pointer;"><div class="route-item-num">3</div><span class="route-item-icon">⚔️</span> מעבר עירון / כביש 65</div>
+    <div class="route-item" onclick="goToStep(4)" style="cursor:pointer;"><div class="route-item-num">4</div><span class="route-item-icon">🏔️</span> תל יקנעם והכרמל</div>
+    <div class="route-item" onclick="goToStep(5)" style="cursor:pointer;"><div class="route-item-num">5</div><span class="route-item-icon">☕</span> ביג עלונים — ארומה</div>
+    <div class="route-item" onclick="goToStep(6)" style="cursor:pointer;"><div class="route-item-num">6</div><span class="route-item-icon">🎵</span> זמן פרטי (טיימר)</div>
+    <div class="route-item" onclick="goToStep(7)" style="cursor:pointer;"><div class="route-item-num">7</div><span class="route-item-icon">🛡️</span> שייח' אבריק — אלכסנדר זייד</div>
+    <div class="route-item" onclick="goToStep(8)" style="cursor:pointer;"><div class="route-item-num">8</div><span class="route-item-icon">📚</span> בית שערים</div>
+    <div class="route-item" onclick="goToStep(9)" style="cursor:pointer;"><div class="route-item-num">9</div><span class="route-item-icon">💧</span> עין יבקע</div>
   </div>
 
   <div class="fun-fact">
@@ -2631,7 +2786,19 @@ body {
     </div>
   </div>
 
-  <button class="btn btn-gold btn-large" onclick="playSound('fun'); restartTrip()">🔄 טיול חדש</button>
+  <button class="send-email-btn" id="sendEmailBtn" onclick="sendTripSummary()">📧 שלח תעודה וסיכום למייל</button>
+  <div class="email-status" id="emailStatus"></div>
+  <button class="btn btn-gold btn-large" style="margin-top:14px;" onclick="playSound('fun'); restartTrip()">🔄 טיול חדש</button>
+</div>
+
+
+<!-- NAVIGATION OVERLAY -->
+<div class="nav-overlay" id="navOverlay" onclick="if(event.target.id==='navOverlay')closeNavOverlay()">
+  <div class="nav-panel">
+    <div class="nav-panel-title">🗺️ ניווט תחנות</div>
+    <div id="navStationList"></div>
+    <button class="nav-close-btn" onclick="closeNavOverlay()">סגור</button>
+  </div>
 </div>
 
 <!-- QUIT OVERLAY -->
@@ -2751,6 +2918,10 @@ let currentStep = 0;
 let points = 0;
 const completedSteps = new Set();
 let myName = "";
+let myEmail = "";
+
+// Backend endpoint for sending trip summary emails
+const TRIP_EMAIL_ENDPOINT = "https://base44.app/api/apps/6a67c2d52a257afc72bc3c8b/functions/send_trip_summary";
 let waterState = {}; // { stepNum: boolean }
 
 // Initialize water state for all steps
@@ -2808,14 +2979,10 @@ function resetWaterMeter(step) {
 // === START TRIP ===
 function startTrip() {
   myName = document.getElementById('myName').value.trim() || "משפחת דחבש";
+  myEmail = document.getElementById('myEmail').value.trim() || "";
   
-  // Update header title
-  document.getElementById('headerTitle').textContent = '🚗 טיול ' + myName;
-  
-  // Update complete page
-  document.getElementById('completeFamilyName').textContent = 'איזה טיול, ' + myName + '! 🎉';
-  
-  // Go to step 1
+  document.getElementById('headerTitle').textContent = '\uD83D\uDE97 \u05D8\u05D9\u05D5\u05DC ' + myName;
+  document.getElementById('completeFamilyName').textContent = '\u05D0\u05D9\u05D6\u05D4 \u05D8\u05D9\u05D5\u05DC, ' + myName + '! \uD83C\uDF89';
   playSound('success');
   goToStep(1);
 }
@@ -3195,6 +3362,12 @@ function restartTrip() {
   updateHeader();
   showPage('page-welcome');
   document.getElementById('backBtn').style.display = 'none';
+  var emailInput = document.getElementById('myEmail');
+  if (emailInput) emailInput.value = '';
+  var emailStatus = document.getElementById('emailStatus');
+  if (emailStatus) { emailStatus.textContent = ''; emailStatus.className = 'email-status'; }
+  var sendBtn = document.getElementById('sendEmailBtn');
+  if (sendBtn) sendBtn.disabled = false;
 }
 
 // === CHECKLIST ===
@@ -3260,6 +3433,137 @@ function castVote(el, index) {
   if (vc) vc.textContent = voteCounts[index];
   playSound('success');
   if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+}
+
+// === STATION NAVIGATOR ===
+const stationNames = [
+  '', 'ראש העין ואבן העזר', 'ג\'לג\'וליה / גלגל', 'מעבר עירון / כביש 65',
+  'תל יקנעם והכרמל', 'ביג עלונים — ארומה', 'זמן פרטי (טיימר)',
+  'שייח\' אבריק — אלכסנדר זייד', 'בית שערים', 'עין יבקע'
+];
+const stationIcons = ['', '\uD83C\uDFDB\uFE0F', '\uD83D\uDCDC', '\u2694\uFE0F', '\uD83C\uDFD1', '\u2615', '\uD83C\uDFB5', '\uD83D\uDEE1\uFE0F', '\uD83D\uDCDA', '\uD83D\uDCA7'];
+
+function showNavOverlay() {
+  playSound('click');
+  var list = document.getElementById('navStationList');
+  var html = '';
+  for (var i = 1; i <= 9; i++) {
+    var classes = 'nav-station';
+    if (completedSteps.has(i)) classes += ' completed';
+    if (currentStep === i) classes += ' current';
+    var checkIcon = completedSteps.has(i) ? '\u2705' : '';
+    html += '<div class="' + classes + '" onclick="navToStep(' + i + ')">' +
+      '<div class="nav-station-num">' + i + '</div>' +
+      '<div class="nav-station-info">' + stationIcons[i] + ' ' + stationNames[i] + '</div>' +
+      '<div class="nav-station-check">' + checkIcon + '</div>' +
+    '</div>';
+  }
+  list.innerHTML = html;
+  document.getElementById('navOverlay').classList.add('show');
+}
+
+function closeNavOverlay() {
+  document.getElementById('navOverlay').classList.remove('show');
+}
+
+function navToStep(step) {
+  playSound('click');
+  closeNavOverlay();
+  goToStep(step);
+}
+
+// === SEND TRIP SUMMARY BY EMAIL ===
+function sendTripSummary() {
+  var btn = document.getElementById('sendEmailBtn');
+  var status = document.getElementById('emailStatus');
+  
+  if (!myEmail) {
+    myEmail = document.getElementById('myEmail') ? document.getElementById('myEmail').value.trim() : '';
+  }
+  
+  if (!myEmail) {
+    status.className = 'email-status error';
+    status.textContent = 'אנא הכנס כתובת מייל בדף הפתיחה ונסה שנית';
+    return;
+  }
+  
+  // Build trip summary data
+  var stationsCompleted = [];
+  var photosTakenList = [];
+  var challengesList = [];
+  var totalMl = 0;
+  
+  for (var i = 1; i <= 9; i++) {
+    if (completedSteps.has(i)) {
+      stationsCompleted.push({ num: i, name: stationNames[i], icon: stationIcons[i] });
+    }
+    if (photosTaken.has(i)) {
+      photosTakenList.push({ num: i, name: stationNames[i] });
+    }
+    if (challengesDone.has(i)) {
+      challengesList.push({ num: i, name: stationNames[i] });
+    }
+    totalMl += (waterSips[i] || 0) * 250;
+  }
+  
+  var summary = {
+    name: myName,
+    email: myEmail,
+    points: points,
+    stationsCompleted: stationsCompleted,
+    stationsCount: completedSteps.size,
+    photosTaken: photosTakenList,
+    photosCount: photosTaken.size,
+    challenges: challengesList,
+    challengesCount: challengesDone.size,
+    waterMl: totalMl,
+    waterLiters: (totalMl / 1000).toFixed(1),
+    date: new Date().toLocaleDateString('he-IL'),
+    tripRoute: 'ראש העין → כביש 6 → ביג עלונים → בית שערים → עין יבקע'
+  };
+  
+  btn.disabled = true;
+  status.className = 'email-status sending';
+  status.textContent = 'שולח מייל...';
+  
+  fetch(TRIP_EMAIL_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(summary)
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    btn.disabled = false;
+    if (data.success || data.ok) {
+      status.className = 'email-status success';
+      status.textContent = '✅ המייל נשלח ל' + myEmail + '!';
+      playSound('success');
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    } else {
+      throw new Error(data.error || 'שגיאה לא ידועה');
+    }
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    status.className = 'email-status error';
+    status.textContent = 'שגיאה: ' + (err.message || 'לא הצליח').substring(0, 50);
+    console.error('Email send error:', err);
+    // Fallback: open mailto
+    var subject = encodeURIComponent('\uD83C\uDFC5 תעודת הטיול המשפחתי - ' + myName);
+    var body = encodeURIComponent(
+      'שלום ' + myName + '!\n\n' +
+      '\uD83C\uDFC5 תעודת הטיול המשפחתי\n' +
+      'מסלול: ' + summary.tripRoute + '\n' +
+      'תאריך: ' + summary.date + '\n\n' +
+      '\u2B50 ניקוד: ' + points + ' נקודות\n' +
+      '\uD83D\uDDC3 תחנות שהושלמו: ' + completedSteps.size + '/9\n' +
+      '\uD83D\uDCF8 תמונות: ' + photosTaken.size + '\n' +
+      '\uD83C\uDFAF אתגרים: ' + challengesDone.size + '\n' +
+      '\uD83D\uDCA7 מים: ' + summary.waterLiters + ' ליטר\n\n' +
+      '\uD83C\uDF89 כל הכבוד!'
+    );
+    window.location.href = 'mailto:' + myEmail + '?subject=' + subject + '&body=' + body;
+  });
 }
 
 // === INIT ===
